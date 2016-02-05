@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.Iterator;
 
-// Represents a location in the MUD (a vertex in the graph).
+// Represents a location in the World (a vertex in the graph).
 class Vertex
 {
     public String name;             // Vertex name

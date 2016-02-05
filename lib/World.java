@@ -12,7 +12,7 @@ import java.util.Vector;
 import java.util.HashMap;
 
 /**
- * A class that can be used to represent a MUD; essenially, this is a
+ * A class that can be used to represent a World; essenially, this is a
  * graph.
  */
 
@@ -22,7 +22,7 @@ public class World
      * Private stuff
      */
 
-    // A record of all the vertices in the MUD graph. HashMaps are not
+    // A record of all the vertices in the World graph. HashMaps are not
     // synchronized, but we don't really need this to be synchronised.
     private Map<String,Vertex> vertexMap = new HashMap<String,Vertex>();
 
@@ -55,7 +55,7 @@ public class World
 
     /**
      * If vertexName is not present, add it to vertexMap.  In either
-     * case, return the Vertex. Used only for creating the MUD.
+     * case, return the Vertex. Used only for creating the World.
      */
     private Vertex getOrCreateVertex(String vertexName){
         Vertex v = vertexMap.get(vertexName);
@@ -110,7 +110,7 @@ public class World
      * the basis of a file with the following format:
      * location message
      * The first location is assumed to be the starting point for
-     * users joining the MUD.
+     * users joining the World.
      */
     private void recordMessages(String messagesfile){
     	try{
@@ -170,13 +170,13 @@ public class World
 
     /**
      * All the public stuff. These methods are designed to hide the
-     * internal structure of the MUD. Could declare these on an
-     * interface and have external objects interact with the MUD via
+     * internal structure of the World. Could declare these on an
+     * interface and have external objects interact with the World via
      * the interface.
      */
 
     /**
-     * A constructor that creates the MUD.
+     * A constructor that creates the World.
      */
     public World(String edgesfile, String messagesfile, String thingsfile){
     	createEdges(edgesfile);
@@ -187,7 +187,7 @@ public class World
     	System.out.println(vertexMap.size() + " vertices\n");
     }
 
-    // This method enables us to display the entire MUD (mostly used
+    // This method enables us to display the entire World (mostly used
     // for testing purposes so that we can check that the structure
     // defined has been successfully parsed.
     public String toString(){
@@ -211,7 +211,7 @@ public class World
     }
 
     /**
-     * Get the start location for new MUD users.
+     * Get the start location for new World users.
      */
     public String startLocation(){
         return startLocation;
@@ -234,7 +234,7 @@ public class World
     }
 
     /**
-     * A method to enable a player to move through the MUD (a player
+     * A method to enable a player to move through the World (a player
      * is a thing). Checks that there is a route to travel on. Returns
      * the location moved to.
      */
@@ -249,7 +249,7 @@ public class World
     	e.dest.things.add(thing);
     	return e.dest.name;
     }
-    //checks if a thing exists in the MUD
+    //checks if a thing exists in the World
     public boolean checkThings(String item){
         for(Vertex v :vertexMap.values()){
             if(v.things.contains(item)){
@@ -261,7 +261,7 @@ public class World
 
     /**
      * A main method that can be used to testing purposes to ensure
-     * that the MUD is specified correctly.
+     * that the World is specified correctly.
      */
     public static void main(String[] args){
     	if (args.length != 3){

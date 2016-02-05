@@ -1,6 +1,6 @@
 package lib;
 
-// Represents an path in the MUD (an edge in a graph).
+// Represents an path in the World (an edge in a graph).
 class Edge
 {
     public Vertex dest;   // Your destination if you walk down this path

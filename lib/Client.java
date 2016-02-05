@@ -38,7 +38,7 @@ public class Client
 		int port = 50014;
 		int callbackport = Integer.parseInt(args[0]);
 
-		System.setProperty("java.security.policy", "mud.policy");
+		System.setProperty("java.security.policy", "world.policy");
 		System.setSecurityManager(new RMISecurityManager());
 
 		Runtime r1 = Runtime.getRuntime();
@@ -46,7 +46,7 @@ public class Client
 
 		try{
 
-			String regURL = "rmi://" + hostname + ":" + port + "/Mud";
+			String regURL = "rmi://" + hostname + ":" + port + "/World";
 			System.out.println("Looking up " + regURL);
 			ServerInterface game = (ServerInterface)Naming.lookup(regURL);
 
@@ -57,25 +57,25 @@ public class Client
 			}
 			//This section is for allowing a user to join the server
 			boolean joins = false;
-			int indexMud = -1;
+			int indexWorld = -1;
 			while(!joins){
 				System.out.println("Do you want to join an existing server or create a new one? <join> <new>");
 				String servReq = in.readLine().toLowerCase();
 				if(servReq.equals("join")){
-					System.out.println("Pick a Server " + game.getMudList());
-					indexMud = Integer.parseInt(in.readLine()) ;
-					while(game.checkMud(indexMud)){
-						System.out.println("Pick a Server " + game.getMudList());
-						indexMud = Integer.parseInt(in.readLine());
+					System.out.println("Pick a Server " + game.getWorldList());
+					indexWorld = Integer.parseInt(in.readLine()) ;
+					while(game.checkWorld(indexWorld)){
+						System.out.println("Pick a Server " + game.getWorldList());
+						indexWorld = Integer.parseInt(in.readLine());
 					}
 					joins = true;
 				}
 				else if(servReq.equals("new")){
-					if(game.getMudNum() >= game.getMudMax()){
+					if(game.getWorldNum() >= game.getWorldMax()){
 						System.out.println("There is too many servers running, please join an existing server");
 					}
 					else{
-						indexMud = game.newServer();
+						indexWorld = game.newServer();
 						joins = true;	
 					}
 				}
@@ -87,7 +87,7 @@ public class Client
 			String username = in.readLine();
 
 			while(nameCheck){
-				nameCheck = game.checkName(username, indexMud - 1);
+				nameCheck = game.checkName(username, indexWorld - 1);
 				if(nameCheck || username.length() < 1){
 					System.out.println("You cannot choose this username, please pick another:");
 					username = in.readLine();
@@ -98,7 +98,7 @@ public class Client
 			}
 			ClientImpl player = new ClientImpl();
 			ClientInterface playerStub = (ClientInterface)UnicastRemoteObject.exportObject(player, callbackport);
-			game.addUser(playerStub, username, indexMud);
+			game.addUser(playerStub, username, indexWorld);
 
 			r1.addShutdownHook(new ClientShutDownThread(playerStub, game));
 			//This is a while loop that will run until the player quits

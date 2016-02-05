@@ -33,13 +33,13 @@ public class Server
 		    int registryport = 50014;
 		    int serverport = 50015;
 		    
-		    System.setProperty("java.security.policy", "mud.policy");
+		    System.setProperty("java.security.policy", "world.policy");
 		    System.setSecurityManager(new RMISecurityManager());
 
-	        ServerImpl mudServ = new ServerImpl();
-		    ServerInterface stub = (ServerInterface)UnicastRemoteObject.exportObject(mudServ, serverport);
+	        ServerImpl worldServ = new ServerImpl();
+		    ServerInterface stub = (ServerInterface)UnicastRemoteObject.exportObject(worldServ, serverport);
 
-		    String regURL = "rmi://" + hostname + ":" + registryport + "/Mud";
+		    String regURL = "rmi://" + hostname + ":" + registryport + "/World";
 	        System.out.println("Registering " + regURL);
 	        Naming.rebind(regURL, stub);
 		}

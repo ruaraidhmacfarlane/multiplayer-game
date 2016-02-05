@@ -9,11 +9,11 @@ public interface ServerInterface extends Remote
     public void removeUser(ClientInterface player) throws RemoteException;
     public void moveUser(ClientInterface player, String dir) throws RemoteException;
     public int pickUp(ClientInterface player, String item) throws RemoteException;
-    public boolean checkMud(int index) throws RemoteException;
+    public boolean checkWorld(int index) throws RemoteException;
     public int newServer() throws RemoteException;
-    public String getMudList() throws RemoteException;
-    public int getMudNum() throws RemoteException;
-    public int getMudMax() throws RemoteException;
+    public String getWorldList() throws RemoteException;
+    public int getWorldNum() throws RemoteException;
+    public int getWorldMax() throws RemoteException;
     public int getPlayerNum() throws RemoteException;
     public int getPlayerMax() throws RemoteException;
   	public String getInfo(ClientInterface player) throws RemoteException;

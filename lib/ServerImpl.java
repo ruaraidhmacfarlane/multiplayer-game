@@ -8,46 +8,46 @@ import java.util.ArrayList;
 
 public class ServerImpl implements ServerInterface
 {
-	String edgesFile = "mymud.edg";
-	String messageFile = "mymud.msg";
-	String thingFile = "mymud.thg";
+	String edgesFile = "myworld.edg";
+	String messageFile = "myworld.msg";
+	String thingFile = "myworld.thg";
 
     
 
-    List<World> mudList = new ArrayList<World>();
-    int mudNum = 3;
-    int maxMuds = 4;
-    int mudIndex = -1;
+    List<World> worldList = new ArrayList<World>();
+    int worldNum = 3;
+    int maxWorlds = 4;
+    int worldIndex = -1;
 
 	List<ClientInterface> playerList = new ArrayList<ClientInterface>();
-    //picked this number to allow 2 players per mud (if a new mud is created)
+    //picked this number to allow 2 players per world (if a new world is created)
     int maxPlayer = 8;
     int numPlayer = 0;
 
 
 
     public ServerImpl() throws RemoteException {
-    	World myMud1 = new World("mymud.edg", "mymud.msg", "mymud.thg");
-        World myMud2 = new World("mymud.edg", "mymud.msg", "mymud.thg");
-        World myMud3 = new World("mymud.edg", "mymud.msg", "mymud.thg");
-        mudList.add(myMud1);
-        mudList.add(myMud2);
-        mudList.add(myMud3);
+    	World myWorld1 = new World("myworld.edg", "myworld.msg", "myworld.thg");
+        World myWorld2 = new World("myworld.edg", "myworld.msg", "myworld.thg");
+        World myWorld3 = new World("myworld.edg", "myworld.msg", "myworld.thg");
+        worldList.add(myWorld1);
+        worldList.add(myWorld2);
+        worldList.add(myWorld3);
         System.out.println("Initiated.");
 
     }
 
     public synchronized void addUser(ClientInterface player, String name, int index) throws RemoteException {	
         player.setIndex(index);
-        String start = mudList.get(player.getIndex()).startLocation();
+        String start = worldList.get(player.getIndex()).startLocation();
     	player.setName(name);
     	player.setLocation(start);
     	numPlayer++;
 
     	playerList.add(player);
-    	mudList.get(player.getIndex()).addThing(start, player.getName());
+    	worldList.get(player.getIndex()).addThing(start, player.getName());
 
-    	System.out.println(player.getName() + " was added to mud " + index);
+    	System.out.println(player.getName() + " was added to world " + index);
 
         this.update(player, "add");
     }
@@ -60,7 +60,7 @@ public class ServerImpl implements ServerInterface
             }
         }
         numPlayer--;
-        mudList.get(player.getIndex()).delThing(player.getLocation(), player.getName());
+        worldList.get(player.getIndex()).delThing(player.getLocation(), player.getName());
 
         System.out.println(player.getName() + " has left the game");
         this.update(player, "remove");
@@ -69,7 +69,7 @@ public class ServerImpl implements ServerInterface
     public void moveUser(ClientInterface player, String dir) throws RemoteException {
         //prev location to allow users in the prev location to be notified the user has moved
         player.setPrevLoc(player.getLocation());
-    	String location = mudList.get(player.getIndex()).moveThing(player.getLocation(), dir, player.getName()); 
+    	String location = worldList.get(player.getIndex()).moveThing(player.getLocation(), dir, player.getName()); 
     	player.setLocation(location);
         if(!player.getPrevLoc().equals(player.getLocation())){
     	   System.out.println(player.getName() + " has moved " + dir);
@@ -85,8 +85,8 @@ public class ServerImpl implements ServerInterface
     		}
     	}
         //checks the item exists in the current location and then allows the user to pick it up
-    	if(mudList.get(player.getIndex()).locationInfo(player.getLocation()).contains(item)){ 		
-    		mudList.get(player.getIndex()).delThing(player.getLocation(), item);
+    	if(worldList.get(player.getIndex()).locationInfo(player.getLocation()).contains(item)){ 		
+    		worldList.get(player.getIndex()).delThing(player.getLocation(), item);
 	    	System.out.println(player.getName() + " picked up " + item);
             //will tell all players in that area that the user picked up an item
             this.update(player, "pickup");
@@ -101,17 +101,17 @@ public class ServerImpl implements ServerInterface
     }
     //returns the index of the new server to allow the user to join it.
     public int newServer() throws RemoteException{
-        World newMud = new World("mymud.edg", "mymud.msg", "mymud.thg");
-        mudList.add(newMud);
-        mudNum++;
+        World newWorld = new World("myworld.edg", "myworld.msg", "myworld.thg");
+        worldList.add(newWorld);
+        worldNum++;
         System.out.println("A new server has been created.");
-        return (mudList.size());
+        return (worldList.size());
     }
     //this formats the string so that there is not a comma at the end of the list.
-    public String getMudList() throws RemoteException{
+    public String getWorldList() throws RemoteException{
         String s = "";
         int j;
-        for(int i = 0; i < mudList.size(); i++){
+        for(int i = 0; i < worldList.size(); i++){
             if(i == 0){
                 j = i + 1;
                 s += j;
@@ -123,21 +123,21 @@ public class ServerImpl implements ServerInterface
         }
         return s;
     }
-    //error checking to make sure the user is trying to connect to a mud that exists
-    public boolean checkMud(int index) throws RemoteException{
+    //error checking to make sure the user is trying to connect to a world that exists
+    public boolean checkWorld(int index) throws RemoteException{
         boolean truth = false;
-        if(mudList.get(index-1) != null){
+        if(worldList.get(index-1) != null){
             truth = false;
-            System.out.println("Mud okay");
+            System.out.println("World okay");
         }
         return truth;
     }
 
-    public int getMudNum() throws RemoteException{
-        return mudNum;
+    public int getWorldNum() throws RemoteException{
+        return worldNum;
     }
-    public int getMudMax() throws RemoteException{
-        return maxMuds;
+    public int getWorldMax() throws RemoteException{
+        return maxWorlds;
     }
     public int getPlayerNum() throws RemoteException{
         return numPlayer;
@@ -146,21 +146,21 @@ public class ServerImpl implements ServerInterface
         return maxPlayer;
     }
     public String getInfo(ClientInterface player) throws RemoteException{
-        String s = mudList.get(player.getIndex()).locationInfo(player.getLocation()).replace(player.getName(), "");
+        String s = worldList.get(player.getIndex()).locationInfo(player.getLocation()).replace(player.getName(), "");
        
         return s;
     }
     public boolean checkName(String name, int index) throws RemoteException{
-        return mudList.get(index).checkThings(name);
+        return worldList.get(index).checkThings(name);
     }
 
     public void update(ClientInterface player, String function) throws RemoteException {
         for(ClientInterface p : playerList){
             //fix this so it doesnt send all users the new location info (one info for prev location and another for another)
-            String mes = mudList.get(player.getIndex()).locationInfo(player.getLocation()).replace(p.getName(), "");
+            String mes = worldList.get(player.getIndex()).locationInfo(player.getLocation()).replace(p.getName(), "");
             if(function.equals("move")){
                 if(player.getPrevLoc().equals(p.getLocation())){
-                    p.printInfo(mudList.get(p.getIndex()).locationInfo(p.getLocation()).replace(p.getName(), ""), player.getIndex());
+                    p.printInfo(worldList.get(p.getIndex()).locationInfo(p.getLocation()).replace(p.getName(), ""), player.getIndex());
                 }
             }
             if(player.getLocation().equals(p.getLocation())){
@@ -184,15 +184,15 @@ public class ServerImpl implements ServerInterface
     }
     //when the user picks up the treasure they will win and players will be removed from server and then server will be restarted
     public void win(ClientInterface player) throws RemoteException {
-        World newMud = new World("mymud.edg", "mymud.msg", "mymud.thg");
-        //replaces mud
-        mudList.set(player.getIndex(), newMud);
+        World newWorld = new World("myworld.edg", "myworld.msg", "myworld.thg");
+        //replaces world
+        worldList.set(player.getIndex(), newWorld);
         System.out.println(player.getName() + " won and the server will be reset");
         String mes = player.getName() + " won the game! The game will now close...";
         for(ClientInterface p : playerList){
             p.printInfo(mes, player.getIndex());
             if(p.getIndex() == player.getIndex()){
-                //call system.exit(0) on all users in the mud server of the player that won
+                //call system.exit(0) on all users in the world server of the player that won
                 p.quitUser();
             }
         }

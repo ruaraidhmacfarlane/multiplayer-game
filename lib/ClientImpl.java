@@ -9,7 +9,7 @@ public class ClientImpl implements ClientInterface
     String name = "";
     String prevLoc = "";
     String location = "";
-    int mudIndex = -1;
+    int worldIndex = -1;
     ArrayList<String> inventory = new ArrayList<>();
 
     public ClientImpl() throws RemoteException {
@@ -18,7 +18,7 @@ public class ClientImpl implements ClientInterface
 
     //this will print to the users specific message if needed
     public void printInfo(String message, int index) throws RemoteException {
-        if(index == mudIndex){
+        if(index == worldIndex){
             System.out.println(message);
         }
     }
@@ -38,7 +38,7 @@ public class ClientImpl implements ClientInterface
     }
 
     public int getIndex() throws RemoteException {
-        return mudIndex;
+        return worldIndex;
     }
 
     public void setName(String name) throws RemoteException {
@@ -54,7 +54,7 @@ public class ClientImpl implements ClientInterface
     }
 
     public void setIndex(int index) throws RemoteException {
-        mudIndex = index - 1;
+        worldIndex = index - 1;
     }
 
     public void addItem(String thing) throws RemoteException {
