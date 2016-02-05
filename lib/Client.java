@@ -33,20 +33,21 @@ public class Client
 		}
 	}
 	public static void main(String args[]) throws RemoteException{
-		//Change hostname to your machine
-		String hostname = "Ruaraidh";
-		int port = 50014;
-		int callbackport = Integer.parseInt(args[0]);
+        System.setProperty("java.security.policy", "world.policy");
+        System.setSecurityManager(new RMISecurityManager());
 
-		System.setProperty("java.security.policy", "world.policy");
-		System.setSecurityManager(new RMISecurityManager());
+        Runtime r1 = Runtime.getRuntime();
 
-		Runtime r1 = Runtime.getRuntime();
-		
+		if (args.length < 2) {
+          System.err.println("Usage:\njava ClientMainline <registryport> <callbackport>");
+          return;
+        }
 
 		try{
+            int port = Integer.parseInt(args[0]);
+            int callbackport = Integer.parseInt(args[1]);
 
-			String regURL = "rmi://" + hostname + ":" + port + "/World";
+			String regURL = "rmi://localhost:" + port + "/World";
 			System.out.println("Looking up " + regURL);
 			ServerInterface game = (ServerInterface)Naming.lookup(regURL);
 
@@ -98,6 +99,8 @@ public class Client
 			}
 			ClientImpl player = new ClientImpl();
 			ClientInterface playerStub = (ClientInterface)UnicastRemoteObject.exportObject(player, callbackport);
+            System.out.println("PlayerStub: " + playerStub.getName());
+            System.out.println("indexWorld: " + indexWorld);
 			game.addUser(playerStub, username, indexWorld);
 
 			r1.addShutdownHook(new ClientShutDownThread(playerStub, game));

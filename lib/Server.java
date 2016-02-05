@@ -27,11 +27,13 @@ public class Server
 		//initiate the shutdown hook
 		Runtime r1 = Runtime.getRuntime();
 	    r1.addShutdownHook(new ServerShutDownThread());
-	    
+	    if (args.length < 2) { 
+	    	System.err.println("Usage:\njava ServerMainline <registryport> <serverport>"); return; 
+	    }
 		try {
-		    String hostname = (InetAddress.getLocalHost()).getCanonicalHostName() ;
-		    int registryport = 50014;
-		    int serverport = 50015;
+		    // String hostname = (InetAddress.getLocalHost()).getCanonicalHostName() ;
+		    int registryport = Integer.parseInt(args[0]);
+		    int serverport = Integer.parseInt(args[1]);
 		    
 		    System.setProperty("java.security.policy", "world.policy");
 		    System.setSecurityManager(new RMISecurityManager());
@@ -39,15 +41,15 @@ public class Server
 	        ServerImpl worldServ = new ServerImpl();
 		    ServerInterface stub = (ServerInterface)UnicastRemoteObject.exportObject(worldServ, serverport);
 
-		    String regURL = "rmi://" + hostname + ":" + registryport + "/World";
+		    String regURL = "rmi://localhost:" + registryport + "/World";
 	        System.out.println("Registering " + regURL);
 	        Naming.rebind(regURL, stub);
 		}
-		catch(java.net.UnknownHostException e){
-		    System.err.println("Cannot get local host name.");
-		    System.err.println(e.getMessage());
-		    System.exit(0);
-		}
+		// catch(java.net.UnknownHostException e){
+		//     System.err.println("Cannot get local host name.");
+		//     System.err.println(e.getMessage());
+		//     System.exit(0);
+		// }
 		catch (java.io.IOException e){
 	        System.err.println("Failed to register.");
 		    System.err.println(e.getMessage());

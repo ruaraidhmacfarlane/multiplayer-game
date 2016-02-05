@@ -40,11 +40,11 @@ public class ServerImpl implements ServerInterface
     public synchronized void addUser(ClientInterface player, String name, int index) throws RemoteException {	
         player.setIndex(index);
         String start = worldList.get(player.getIndex()).startLocation();
-    	player.setName(name);
-    	player.setLocation(start);
-    	numPlayer++;
+        player.setName(name);
+        player.setLocation(start);
+        numPlayer++;
 
-    	playerList.add(player);
+        playerList.add(player);
     	worldList.get(player.getIndex()).addThing(start, player.getName());
 
     	System.out.println(player.getName() + " was added to world " + index);
