@@ -1,6 +1,4 @@
-//Name: Ruaraidh Macfarlane
-//ID: 51228398
-package cs3524.solutions.mud;
+package lib;
 
 import java.util.Map;
 import java.util.HashMap;
