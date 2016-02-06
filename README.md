@@ -1,6 +1,6 @@
 # multiplayer-game
 
-A simple multiplayer adventure game. 
+A simple multi-user dungeon adventure game using Java RMI. 
 
 ##Run the game
 
